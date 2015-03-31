@@ -374,6 +374,12 @@ class Catalog(object):
         else:
             headers.append(('PO-Revision-Date', self.revision_date))
         headers.append(('Last-Translator', self.last_translator))
+        if self.locale is not None:
+            headers.append(('Language', str(self.locale)))
+        else:
+            # For templates, xgettext outputs the Language header, but with no
+            # value.
+            headers.append(('Language', ''))
         if (self.locale is not None) and ('LANGUAGE' in self.language_team):
             headers.append(('Language-Team',
                            self.language_team.replace('LANGUAGE',
@@ -400,6 +406,8 @@ class Catalog(object):
                 self.msgid_bugs_address = value
             elif name == 'last-translator':
                 self.last_translator = value
+            elif name == 'language' and value:
+                self.locale = Locale.parse(value)
             elif name == 'language-team':
                 self.language_team = value
             elif name == 'content-type':
@@ -437,6 +445,7 @@ class Catalog(object):
     POT-Creation-Date: 1990-04-01 15:30+0000
     PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE
     Last-Translator: FULL NAME <EMAIL@ADDRESS>
+    Language:
     Language-Team: LANGUAGE <LL@li.org>
     MIME-Version: 1.0
     Content-Type: text/plain; charset=utf-8
@@ -457,6 +466,7 @@ class Catalog(object):
     POT-Creation-Date: 1990-04-01 15:30+0000
     PO-Revision-Date: 1990-08-03 12:00+0000
     Last-Translator: John Doe <jd@example.com>
+    Language: de_DE
     Language-Team: de_DE <de@example.com>
     Plural-Forms: nplurals=2; plural=(n != 1)
     MIME-Version: 1.0
